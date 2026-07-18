@@ -3,289 +3,302 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AnDev</title>
+<title>AAdreww — ~/portfolio</title>
 <style>
   :root {
-    --bg: #0b0c10;
-    --bg-alt: #111319;
-    --text: #f4f4f6;
-    --text-dim: #9a9ba6;
-    --accent-a: #7c5cff;
-    --accent-b: #23d3d3;
-    --card-border: rgba(255,255,255,0.08);
-  }
-
-  @media (prefers-color-scheme: light) {
-    :root {
-      --bg: #f7f7fb;
-      --bg-alt: #ffffff;
-      --text: #17181c;
-      --text-dim: #5c5d68;
-      --card-border: rgba(0,0,0,0.08);
-    }
+    --bg: #12100c;
+    --bg-well: #0a0908;
+    --amber: #ffb000;
+    --amber-dim: #b57e12;
+    --amber-faint: #6b551c;
+    --muted: #8a7e6c;
+    --frame: #2b2419;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html { scroll-behavior: smooth; }
+  html, body {
+    height: 100%;
+    background: var(--bg-well);
+  }
 
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4vh 4vw;
+    font-family: ui-monospace, 'Cascadia Code', 'JetBrains Mono', Consolas, monospace;
+    color: var(--amber);
+    position: relative;
     overflow-x: hidden;
   }
 
-  .glow {
+  /* ambient vignette behind the terminal */
+  body::before {
+    content: "";
     position: fixed;
     inset: 0;
-    z-index: -1;
-    background:
-      radial-gradient(600px circle at 15% 20%, rgba(124,92,255,0.25), transparent 60%),
-      radial-gradient(500px circle at 85% 75%, rgba(35,211,211,0.20), transparent 60%);
+    background: radial-gradient(ellipse at 50% 40%, rgba(255,176,0,0.06), transparent 60%);
     pointer-events: none;
+    z-index: 0;
   }
 
-  nav {
-    position: sticky;
-    top: 0;
+  .crt {
+    width: min(760px, 100%);
+    background: var(--bg);
+    border: 1px solid var(--frame);
+    border-radius: 10px;
+    box-shadow:
+      0 0 0 1px rgba(255,176,0,0.03),
+      0 30px 80px -30px rgba(0,0,0,0.8),
+      0 0 60px -10px rgba(255,176,0,0.08);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .titlebar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 1.25rem 6vw;
-    backdrop-filter: blur(10px);
-    background: color-mix(in srgb, var(--bg) 70%, transparent);
-    border-bottom: 1px solid var(--card-border);
-    z-index: 10;
+    gap: 0.6rem;
+    padding: 0.7rem 1rem;
+    background: var(--frame);
+    border-bottom: 1px solid #3a301f;
   }
 
-  .logo {
-    font-weight: 700;
-    font-size: 1.2rem;
-    letter-spacing: -0.02em;
+  .dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #4a3f28;
   }
 
-  .logo span {
-    background: linear-gradient(90deg, var(--accent-a), var(--accent-b));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+  .titlebar .path {
+    margin-left: 0.5rem;
+    font-size: 0.78rem;
+    color: var(--muted);
+    letter-spacing: 0.02em;
   }
 
-  nav ul {
-    list-style: none;
-    display: flex;
-    gap: 2rem;
+  .screen {
+    padding: 1.75rem 1.5rem 2.25rem;
+    font-size: 0.92rem;
+    line-height: 1.75;
+    min-height: 420px;
+    position: relative;
   }
 
-  nav a {
-    color: var(--text-dim);
-    text-decoration: none;
-    font-size: 0.95rem;
-    transition: color 0.2s ease;
+  /* scanline drift overlay */
+  .screen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255,176,0,0.035) 0px,
+      rgba(255,176,0,0.035) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    animation: drift 9s linear infinite;
+    pointer-events: none;
+    mix-blend-mode: overlay;
   }
 
-  nav a:hover { color: var(--text); }
-
-  .hero {
-    min-height: 90vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 0 6vw;
-    max-width: 900px;
+  @keyframes drift {
+    from { background-position: 0 0; }
+    to { background-position: 0 120px; }
   }
 
-  .hero .eyebrow {
-    font-size: 0.85rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent-b);
-    margin-bottom: 1.25rem;
-    font-weight: 600;
-  }
+  .line { white-space: pre-wrap; word-break: break-word; }
 
-  .hero h1 {
-    font-size: clamp(2.5rem, 7vw, 4.75rem);
-    line-height: 1.05;
-    letter-spacing: -0.03em;
-    font-weight: 800;
-    margin-bottom: 1.5rem;
-  }
+  .prompt .user { color: #7fb37f; }
+  .prompt .at { color: var(--muted); }
+  .prompt .path { color: #6fa8c9; }
+  .prompt .sym { color: var(--muted); margin-right: 0.4em; }
+  .prompt .cmd { color: #fff3d6; }
 
-  .hero h1 .gradient {
-    background: linear-gradient(90deg, var(--accent-a), var(--accent-b));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
+  .out { color: var(--amber-dim); padding-left: 0.1em; }
+  .out .quote { color: var(--muted); }
+  .out a { color: #6fc3c3; text-decoration: none; border-bottom: 1px dotted rgba(111,195,195,0.4); }
+  .out a:hover { color: #9fe0e0; }
 
-  .hero p {
-    font-size: 1.15rem;
-    color: var(--text-dim);
-    max-width: 560px;
-    margin-bottom: 2.25rem;
-    line-height: 1.6;
-  }
+  .dirline { display: flex; gap: 0.9em; color: var(--amber-faint); }
+  .dirline .perm { color: var(--muted); }
+  .dirline .name { color: var(--amber); min-width: 15ch; }
+  .dirline .desc { color: var(--muted); }
 
-  .cta-row {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .btn {
-    padding: 0.85rem 1.75rem;
-    border-radius: 999px;
-    font-weight: 600;
-    font-size: 0.95rem;
-    text-decoration: none;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  .cursor {
     display: inline-block;
+    width: 0.55em;
+    height: 1em;
+    background: var(--amber);
+    vertical-align: text-bottom;
+    animation: blink 1s steps(1) infinite;
+    margin-left: 2px;
   }
 
-  .btn-primary {
-    background: linear-gradient(90deg, var(--accent-a), var(--accent-b));
-    color: #0b0c10;
+  @keyframes blink {
+    50% { opacity: 0; }
   }
 
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px -8px rgba(124,92,255,0.6);
-  }
-
-  .btn-ghost {
-    border: 1px solid var(--card-border);
-    color: var(--text);
-  }
-
-  .btn-ghost:hover {
-    background: var(--bg-alt);
-    transform: translateY(-2px);
-  }
-
-  section {
-    padding: 6rem 6vw;
-  }
-
-  .section-title {
-    font-size: clamp(1.75rem, 4vw, 2.5rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-bottom: 3rem;
-    text-align: center;
-  }
-
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.5rem;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .card {
-    background: var(--bg-alt);
-    border: 1px solid var(--card-border);
-    border-radius: 16px;
-    padding: 2rem;
-    transition: transform 0.25s ease, border-color 0.25s ease;
-  }
-
-  .card:hover {
-    transform: translateY(-6px);
-    border-color: var(--accent-a);
-  }
-
-  .card .icon {
-    font-size: 1.75rem;
-    margin-bottom: 1rem;
-  }
-
-  .card h3 {
-    font-size: 1.15rem;
-    margin-bottom: 0.6rem;
-  }
-
-  .card p {
-    color: var(--text-dim);
-    font-size: 0.95rem;
-    line-height: 1.6;
-  }
+  .gap { height: 0.85rem; }
 
   footer {
-    padding: 3rem 6vw;
-    border-top: 1px solid var(--card-border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem;
-    color: var(--text-dim);
-    font-size: 0.9rem;
+    margin-top: 1.5rem;
+    text-align: center;
+    color: var(--frame);
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    z-index: 1;
+    position: relative;
   }
 
-  footer a {
-    color: var(--text-dim);
-    text-decoration: none;
+  footer a { color: var(--amber-faint); text-decoration: none; }
+  footer a:hover { color: var(--amber-dim); }
+
+  @media (max-width: 520px) {
+    .screen { font-size: 0.82rem; padding: 1.25rem 1rem 1.75rem; min-height: 380px; }
+    .dirline { flex-direction: column; gap: 0.1em; }
   }
 
-  footer a:hover { color: var(--text); }
-
-  @media (max-width: 640px) {
-    nav ul { display: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .screen::after { animation: none; }
+    .cursor { animation: none; }
   }
 </style>
 </head>
 <body>
 
-<div class="glow"></div>
-
-<nav>
-  <div class="logo">An<span>Dev</span></div>
-  <ul>
-    <li><a href="#work">Work</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-</nav>
-
-<section class="hero">
-  <div class="eyebrow">Welcome</div>
-  <h1>Building things<br>with <span class="gradient">code &amp; craft</span></h1>
-  <p>I design and build clean, fast, modern software. This is my little corner of the internet — a work in progress, always shipping.</p>
-  <div class="cta-row">
-    <a href="#work" class="btn btn-primary">See my work</a>
-    <a href="#contact" class="btn btn-ghost">Get in touch</a>
+<div>
+  <div class="crt">
+    <div class="titlebar">
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      <span class="path">AAdreww — zsh — 80x24</span>
+    </div>
+    <div class="screen" id="screen" aria-label="Terminal session introducing AAdreww"></div>
   </div>
-</section>
+  <footer>rendered live &middot; <a href="https://github.com/AAdreww" id="gh-link">github.com/AAdreww</a></footer>
+</div>
 
-<section id="work">
-  <h2 class="section-title">What I do</h2>
-  <div class="cards">
-    <div class="card">
-      <div class="icon">⚡</div>
-      <h3>Fast builds</h3>
-      <p>Lean, performant code with no unnecessary bloat — just what's needed, done well.</p>
-    </div>
-    <div class="card">
-      <div class="icon">🎨</div>
-      <h3>Clean design</h3>
-      <p>Interfaces that feel intentional, modern, and easy to use across every screen.</p>
-    </div>
-    <div class="card">
-      <div class="icon">🚀</div>
-      <h3>Ship often</h3>
-      <p>Iterating in public, learning fast, and pushing improvements continuously.</p>
-    </div>
-  </div>
-</section>
+<script>
+(function () {
+  var screen = document.getElementById('screen');
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-<footer id="contact">
-  <div>© 2026 AnDev. All rights reserved.</div>
-  <div><a href="https://github.com/AAdreww">GitHub</a></div>
-</footer>
+  function el(tag, cls, html) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (html !== undefined) e.innerHTML = html;
+    return e;
+  }
+
+  function promptLine(cmd) {
+    var line = el('div', 'line prompt');
+    line.innerHTML =
+      '<span class="user">visitor</span><span class="at">@</span>' +
+      '<span class="path">andev</span><span class="sym">:~$</span> ' +
+      '<span class="cmd">' + cmd + '</span>';
+    return line;
+  }
+
+  function outLine(html) {
+    var line = el('div', 'line out', html);
+    return line;
+  }
+
+  function dirLine(perm, name, desc) {
+    var line = el('div', 'dirline');
+    line.innerHTML =
+      '<span class="perm">' + perm + '</span>' +
+      '<span class="name">' + name + '</span>' +
+      '<span class="desc">' + desc + '</span>';
+    return line;
+  }
+
+  function gap() { return el('div', 'gap'); }
+
+  // Each step: { cmd } typed, followed by output nodes revealed instantly after.
+  var steps = [
+    {
+      cmd: 'whoami',
+      output: [outLine('AAdreww &mdash; builder, shipper, mostly caffeine')]
+    },
+    {
+      cmd: 'cat mission.txt',
+      output: [outLine('<span class="quote">&gt;</span> Lean code. Clean design. Ship often.')]
+    },
+    {
+      cmd: 'ls -la stack/',
+      output: [
+        dirLine('drwxr-xr-x', 'fast-builds/', 'lean, performant, no bloat'),
+        dirLine('drwxr-xr-x', 'clean-design/', 'intentional interfaces, every screen'),
+        dirLine('drwxr-xr-x', 'ship-often/', 'iterate in public, learn fast')
+      ]
+    },
+    {
+      cmd: 'cat contact.txt',
+      output: [outLine('github: <a href="https://github.com/AAdreww">github.com/AAdreww</a>')]
+    }
+  ];
+
+  var cursor = el('span', 'cursor');
+
+  function typeCommand(cmdText, container, onDone) {
+    var line = el('div', 'line prompt');
+    line.innerHTML =
+      '<span class="user">visitor</span><span class="at">@</span>' +
+      '<span class="path">andev</span><span class="sym">:~$</span> ';
+    var cmdSpan = el('span', 'cmd');
+    line.appendChild(cmdSpan);
+    line.appendChild(cursor);
+    container.appendChild(line);
+
+    if (reduceMotion) {
+      cmdSpan.textContent = cmdText;
+      onDone();
+      return;
+    }
+
+    var i = 0;
+    var speed = 32;
+    (function tick() {
+      if (i <= cmdText.length) {
+        cmdSpan.textContent = cmdText.slice(0, i);
+        i++;
+        setTimeout(tick, speed);
+      } else {
+        onDone();
+      }
+    })();
+  }
+
+  function runStep(index) {
+    if (index >= steps.length) {
+      var doneLine = el('div', 'line prompt');
+      doneLine.innerHTML =
+        '<span class="user">visitor</span><span class="at">@</span>' +
+        '<span class="path">andev</span><span class="sym">:~$</span> ';
+      doneLine.appendChild(cursor);
+      screen.appendChild(doneLine);
+      return;
+    }
+
+    var step = steps[index];
+    typeCommand(step.cmd, screen, function () {
+      cursor.remove();
+      var delay = reduceMotion ? 0 : 180;
+      setTimeout(function () {
+        step.output.forEach(function (node) { screen.appendChild(node); });
+        screen.appendChild(gap());
+        setTimeout(function () { runStep(index + 1); }, reduceMotion ? 0 : 260);
+      }, delay);
+    });
+  }
+
+  runStep(0);
+})();
+</script>
 
 </body>
 </html>
